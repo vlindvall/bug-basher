@@ -2,6 +2,14 @@
 
 Automated bug investigation system that receives JIRA webhook notifications, identifies relevant repositories via the Backstage catalog, uses an LLM to triage and investigate root causes, and either opens a PR with a fix or comments findings on the JIRA ticket.
 
+## Project Status
+
+This project is open source and actively under development.
+
+- Current state: work in progress
+- Stability: breaking changes may happen between releases
+- Feedback and contributions are welcome
+
 ## Architecture
 
 ```
@@ -163,3 +171,11 @@ Key parameters:
 | `/bug-basher/anthropic/api-key` | Anthropic API key |
 | `/bug-basher/github/token` | GitHub token |
 | `/bug-basher/slack/webhook-url` | Slack incoming webhook URL |
+
+## Contributing
+
+See `CONTRIBUTING.md` for development workflow, PR expectations, and contribution guidelines.
+
+## License
+
+This project is licensed under the MIT License. See `LICENSE` for details.

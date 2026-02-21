@@ -2,6 +2,8 @@
 name = "bug-basher"
 version = "0.1.0"
 description = "Automated bug investigation system"
+license = "MIT"
+readme = "README.md"
 packages = [
     { include = "shared", from = "src" },
     { include = "investigator", from = "src" },
