@@ -110,6 +110,7 @@ class InvestigationConfig:
     clone_timeout_seconds: float = 120.0
     agent_timeout_seconds: float = 300.0
     max_parallel_agents: int = 3
+    max_repos_to_investigate: int = 3
     high_confidence_threshold: float = 0.8
     uncertain_confidence_threshold: float = 0.5
     github_token: str = ""

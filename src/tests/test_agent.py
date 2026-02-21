@@ -579,3 +579,36 @@ class TestInvestigateRepos:
 
         assert len(results) == 2
         assert results[0].confidence >= results[1].confidence
+
+    async def test_only_investigates_top_three_triage_results(self, sample_bug, investigation_config):
+        repos = [
+            Repository(name="repo-a", github_slug="example-org/repo-a"),
+            Repository(name="repo-b", github_slug="example-org/repo-b"),
+            Repository(name="repo-c", github_slug="example-org/repo-c"),
+            Repository(name="repo-d", github_slug="example-org/repo-d"),
+        ]
+        triage_results = [
+            TriageResult(repo="repo-a", confidence=0.40),
+            TriageResult(repo="repo-b", confidence=0.95),
+            TriageResult(repo="repo-c", confidence=0.80),
+            TriageResult(repo="repo-d", confidence=0.70),
+        ]
+
+        investigated_repos: list[str] = []
+
+        async def fake_clone(slug, config):
+            return Path(f"/tmp/fake/{slug.split('/')[-1]}")
+
+        async def fake_agent(bug, repo_name, repo_dir, config):
+            investigated_repos.append(repo_name)
+            return InvestigationResult(repo=repo_name, confidence=0.5)
+
+        with patch("investigator.agent.clone_repo", side_effect=fake_clone):
+            with patch("investigator.agent.run_investigation_agent", side_effect=fake_agent):
+                with patch("investigator.agent.shutil.rmtree"):
+                    await investigate_repos(
+                        sample_bug, triage_results, repos, investigation_config
+                    )
+
+        assert len(investigated_repos) == 3
+        assert set(investigated_repos) == {"repo-b", "repo-c", "repo-d"}

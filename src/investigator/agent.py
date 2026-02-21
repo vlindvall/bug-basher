@@ -284,8 +284,13 @@ async def investigate_repos(
     repos: list[Repository],
     config: InvestigationConfig,
 ) -> list[InvestigationResult]:
-    """Clone and investigate triaged repos in parallel."""
+    """Clone and investigate the top-ranked triaged repos in parallel."""
     slug_map: dict[str, str] = {r.name: r.github_slug for r in repos if r.github_slug}
+    selected_triage_results = sorted(
+        triage_results,
+        key=lambda tr: tr.confidence,
+        reverse=True,
+    )[: max(config.max_repos_to_investigate, 0)]
 
     async def _investigate_single(triage_result: TriageResult) -> InvestigationResult | None:
         repo_name = triage_result.repo
@@ -311,7 +316,7 @@ async def investigate_repos(
         async with semaphore:
             return await _investigate_single(tr)
 
-    tasks = [_throttled(tr) for tr in triage_results]
+    tasks = [_throttled(tr) for tr in selected_triage_results]
     raw_results = await asyncio.gather(*tasks)
 
     results = [r for r in raw_results if r is not None]
