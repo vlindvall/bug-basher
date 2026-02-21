@@ -197,6 +197,41 @@ class TestCloneRepo:
         url_arg = args[5]  # 6th arg is the URL
         assert "x-access-token:test-gh-token@github.com" in url_arg
 
+    async def test_uses_ssh_url_when_protocol_is_ssh(self, investigation_config):
+        mock_proc = AsyncMock()
+        mock_proc.communicate.return_value = (b"", b"")
+        mock_proc.returncode = 0
+        investigation_config.clone_protocol = "ssh"
+
+        with patch("investigator.agent.asyncio.create_subprocess_exec", return_value=mock_proc) as mock_exec:
+            with patch("investigator.agent.tempfile.mkdtemp", return_value="/tmp/test"):
+                try:
+                    await clone_repo("example-org/repo", investigation_config)
+                except Exception:
+                    pass
+
+        args = mock_exec.call_args[0]
+        url_arg = args[5]  # 6th arg is the URL
+        assert url_arg == "git@github.com:example-org/repo.git"
+
+    async def test_ssh_protocol_takes_precedence_over_token(self, investigation_config):
+        mock_proc = AsyncMock()
+        mock_proc.communicate.return_value = (b"", b"")
+        mock_proc.returncode = 0
+        investigation_config.clone_protocol = "ssh"
+        investigation_config.github_token = "should-not-be-used"
+
+        with patch("investigator.agent.asyncio.create_subprocess_exec", return_value=mock_proc) as mock_exec:
+            with patch("investigator.agent.tempfile.mkdtemp", return_value="/tmp/test"):
+                try:
+                    await clone_repo("example-org/repo", investigation_config)
+                except Exception:
+                    pass
+
+        args = mock_exec.call_args[0]
+        url_arg = args[5]  # 6th arg is the URL
+        assert url_arg == "git@github.com:example-org/repo.git"
+
     async def test_clone_failure_raises(self, investigation_config):
         mock_proc = AsyncMock()
         mock_proc.communicate.return_value = (b"", b"fatal: repository not found")

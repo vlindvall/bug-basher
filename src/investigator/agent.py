@@ -138,7 +138,9 @@ async def clone_repo(github_slug: str, config: InvestigationConfig) -> Path:
     repo_name = github_slug.split("/")[-1]
     dest = tmpdir / repo_name
 
-    if config.github_token:
+    if config.clone_protocol.strip().lower() == "ssh":
+        url = f"git@github.com:{github_slug}.git"
+    elif config.github_token:
         url = f"https://x-access-token:{config.github_token}@github.com/{github_slug}.git"
     else:
         url = f"https://github.com/{github_slug}.git"

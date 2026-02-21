@@ -82,6 +82,7 @@ Optional environment variables:
 - `LLM_PROVIDER` (`claude` or `codex`)
 - `TRIAGE_MODEL` (optional model override for triage)
 - `INVESTIGATION_MODEL` (optional model override for investigation agent)
+- `GITHUB_CLONE_PROTOCOL` (`https` default, or `ssh` to clone via SSH)
 - `GITHUB_DEFAULT_ORG` (default GitHub org used by `GitHubConfig`)
 - `TEAM` (team identifier used for repo filtering; replaces hardcoded team names)
 - `DEFAULT_GITHUB_SLUGS` (comma-separated fallback slug filters, e.g. `example-org/commerce-core,example-org/checkout`)

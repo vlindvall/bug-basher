@@ -113,6 +113,7 @@ class InvestigationConfig:
     high_confidence_threshold: float = 0.8
     uncertain_confidence_threshold: float = 0.5
     github_token: str = ""
+    clone_protocol: str = "https"
 
 
 @dataclass

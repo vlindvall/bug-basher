@@ -147,6 +147,7 @@ async def investigate_command(args: argparse.Namespace) -> None:
         model=args.agent_model or os.environ.get("INVESTIGATION_MODEL"),
         max_budget_usd=args.budget,
         github_token=os.environ.get("GITHUB_TOKEN", ""),
+        clone_protocol=os.environ.get("GITHUB_CLONE_PROTOCOL", "https"),
     )
 
     print("Investigating...")
