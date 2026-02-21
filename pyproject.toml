@@ -1,0 +1,30 @@
+[tool.poetry]
+name = "bug-basher"
+version = "0.1.0"
+description = "Automated bug investigation system"
+packages = [
+    { include = "shared", from = "src" },
+    { include = "investigator", from = "src" },
+]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+httpx = "^0.28"
+pydantic = "^2.10"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3"
+pytest-asyncio = "^0.25"
+respx = "^0.22"
+ruff = "^0.9"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["src/tests"]
+
+[tool.ruff]
+src = ["src"]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
